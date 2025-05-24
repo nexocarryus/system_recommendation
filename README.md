@@ -131,7 +131,7 @@ Sedangkan ratings.csv memiliki 101000 baris data dan 4 kolom dengan rincian seba
    Ternyata setelah di cek, ada film yang tidak memiliki genre. dan berhubung film yang tidak memiliki genre hanyalah sedikit yaitu 0.35% maka dapat dihapus
    nantinya pada proses preprocessing data
 
-   **Distribusi genre dan rata rata rating genre setelah di filter hanya film yang memiliki genre saja
+   **Distribusi genre dan rata rata rating genre setelah di filter hanya film yang memiliki genre saja**
 
    ![image](https://github.com/user-attachments/assets/8f006f1e-caf4-46c7-bca7-f4fa4d79295c)
 
