@@ -12,20 +12,17 @@ Sunilkumar, C. N. (2020). A review of movie recommendation system: Limitations, 
 ## Business Understanding
 ### Problem Statements
 
-1. Bagaimana cara memberikan rekomendasi film yang relevan kepada pengguna berdasarkan preferensi mereka?
-
-2. Bagaimana memanfaatkan data rating pengguna dan data film untuk menghasilkan rekomendasi yang akurat?
+1. Berdasarkan data mengenai pengguna, bagaimana membuat sistem rekomendasi yang dipersonalisasi dengan teknik content-based filtering?
+2. Dengan data rating yang dimiliki, bagaimana cara agar dapat merekomendasikan film lain yang mungkin disukai dan belum pernah ditonton oleh pengguna? 
 
 ### Goals
 
-1. Membangun sistem rekomendasi yang dapat memberikan daftar 10 film terbaik untuk pengguna.
-
-2. Mengimplementasikan dua pendekatan berbeda: content-based filtering dan collaborative filtering.
-
+1. Menghasilkan sejumlah rekomendasi film yang dipersonalisasi untuk pengguna dengan teknik content-based filtering.
+2. Menghasilkan sejumlah rekomendasi film yang sesuai dengan preferensi pengguna dan belum pernah ditonton sebelumnya dengan teknik collaborative filtering
+   
 ### Solution approach
 
 1. Content-Based Filtering: Menggunakan metadata film (genre) untuk merekomendasikan film yang mirip dengan yang disukai pengguna.
-
 2. Collaborative Filtering: Menggunakan data rating dari pengguna lain untuk merekomendasikan film yang mungkin disukai oleh pengguna serupa.
 
 ## Data Understanding
