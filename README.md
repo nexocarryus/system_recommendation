@@ -166,7 +166,7 @@ Dilakukan penghapusan film yang  genrenya adalah 'no genre listed', dengan memfi
 
 TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer adalah teknik yang digunakan dalam pemrosesan bahasa alami (NLP) untuk mengubah teks menjadi representasi numerik. Hal ini perlu dilakukan karena TF-IDF membantu mengidentifikasi kata-kata yang lebih relevan dalam data, sehingga sistem rekomendasi dapat lebih akurat dalam memahami konten yang disukai pengguna, selain itu TF-IDF juga dapat memungkinkan sistem untuk bekerja dengan representasi numerik yang lebih efisien, sehingga mempermudah perhitungan kesamaan antar data, dalam hal ini adalah judul film dengan genre film.
 
-## Modeling
+### Modeling
 
 Content-based filtering adalah metode yang digunakan dalam sistem rekomendasi yang berfokus pada karakteristik atau konten dari item-item yang ingin direkomendasikan. Dalam proyek ini fitur item yang digunakan untuk menentukan kesamaan item yang ada dan preferensi pengguna adalah 'genre' film.
 
@@ -222,10 +222,11 @@ proses model development content based filtering dilakukan dengan tahapan beriku
    Melalui gambar di atas, dapat dilihat bahwa sistem berhasil memberikan 10 rekomendasi film yang karakteristik genrenya sama seperti
    film Jumanji (1995) yakni 	Adventure, Children dan Fantasy.
 
-## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+### Evaluation
+Matrik evaluasi yang digunakan adalah precision. Precision bekerja dengan mengukur proporsi item yang direkomendasikan yang benar-benar relevan. Rumus precision adalah:
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+![image](https://github.com/user-attachments/assets/3fdf7a08-a69f-46e9-9b1c-1b3d123d3d91)
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+dengan mengikuti rumus tersebut, maka dapat menghitung precision dari content based filtering yang sudah berhasil dibangun. Yakni ada 10 item yang relevant dari 10 rekomendasi yang diberikan. Artinya nilai precision dari model tersebut adalah 100%.
+
+
