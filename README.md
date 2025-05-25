@@ -152,19 +152,75 @@ Sedangkan ratings.csv memiliki 101000 baris data dan 4 kolom dengan rincian seba
 
 
 ## Content based filtering
-### Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+### Data Pre-processing & Preparation
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+1. Menyimpan data utama ke variabel baru khusus content based filtering
+
+Di tahap ini data utama dari movies.csv di copy ke variabel baru khusus untuk persiapan content based filtering, hal ini perlu dilakukan karena proses preprocessing maupun preparation data pada content based filtering berbeda dengan collaborative filtering, sehingga tahapan ini berfungsi agar data asli tidak terpengaruh oleh perubahan yang dilakukan pada proses pembangunan content based filtering dan data asli dapat digunakan kembali untuk membangun collaborative filtering.
+
+2. Menghapus film yang tidak memiliki genre
+
+Dilakukan penghapusan film yang  genrenya adalah 'no genre listed', dengan memfilter hanya film yang memiliki genre saja yang boleh disimpan ke dataframe. Hal ini dilakukan karena content based filtering akan memanfaatkan genre untuk memberikan rekomendasi film yang disukai oleh user berdasarkan preferensi mereka, apabila terdapat film yang tidak memiliki genre, maka tentunya hal ini akan menyulitkan dan tidak bisa digunakan dalam pembangunan content based filtering.
+
+3. Menerapkan TF-IDF vectorizer
+
+TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer adalah teknik yang digunakan dalam pemrosesan bahasa alami (NLP) untuk mengubah teks menjadi representasi numerik. Hal ini perlu dilakukan karena TF-IDF membantu mengidentifikasi kata-kata yang lebih relevan dalam data, sehingga sistem rekomendasi dapat lebih akurat dalam memahami konten yang disukai pengguna, selain itu TF-IDF juga dapat memungkinkan sistem untuk bekerja dengan representasi numerik yang lebih efisien, sehingga mempermudah perhitungan kesamaan antar data, dalam hal ini adalah judul film dengan genre film.
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+Content-based filtering adalah metode yang digunakan dalam sistem rekomendasi yang berfokus pada karakteristik atau konten dari item-item yang ingin direkomendasikan. Dalam proyek ini fitur item yang digunakan untuk menentukan kesamaan item yang ada dan preferensi pengguna adalah 'genre' film.
+
+Kelebihan dari pendekatan ini adalah hanya membutuhkan informasi tentang item dan preferensi pengguna, sehingga tidak bergantung pada data dari pengguna lain dan content-based filtering dapat memberikan rekomendasi bahkan untuk pengguna baru yang belum memiliki banyak interaksi. Sedangkan kekurangannya ialah pengguna mungkin hanya mendapatkan rekomendasi yang mirip dengan item yang sudah mereka sukai, sehingga mengurangi kemungkinan menemukan item baru yang berbeda.
+
+proses model development content based filtering dilakukan dengan tahapan berikut:
+1. Menghitung derajat kesamaan dengan cosine similarity
+
+   Setelah matrix tfidf sudah terbentuk selanjutnya dapat dihitung derajat kesamaan antar matrixnya dengan memanfaatkan cosine
+   similarity, hasil akhirnya akan menjadi array 2 dimensi seperti berikut:
+
+   ![image](https://github.com/user-attachments/assets/cd4b66b0-03d7-437c-b5ae-3d5e06a9a198)
+
+   untuk lebih memahami penggunaan dan intepretasinya, hasil tersebut dapat di plot ke dataframe dengan baris dan kolom berupa nama
+   film seperti berikut:
+
+   ![image](https://github.com/user-attachments/assets/cb416ed9-1d56-4a83-a510-76f9b3630b60)
+
+   dari gambar di atas, dapat diketahui derajat kesamaan antar film yang ada. Contohnya jika ada user yang menyukai film Everything Is Illuminated (2005) maka kemungkinan sistem akan merekomendasikan film One-Way Ticket to Mombasa (Menolippu Mombasaan) (2002), karena nilai derajat kesamaan kedua film tersebut adalah 1.
+
+2. Membuat fungsi movie recommendations
+
+   fungsi recommendations yang digunakan dalam proyek ini memiliki struktur sebagai berikut:   
+
+   def movie_recommendations(judul_film, similarity_data=cosine_sim_df, items=cbf_df[['title', 'genres']], k=10):
+
+   fungsi ini memiliki peran untuk memberikan rekomendasi film berdasarkan kemiripan dataframe yang didasarkan pada nilai cosine
+   similarity terbesar.
+
+   parameter dari fungsi tersebut adalah:
+
+   - judul_film : tipe data string (str), merupakan judul film berdasarkan (index kemiripan dataframe)
+
+   - similarity_data : tipe data pd.DataFrame (object), Kesamaan dataframe, simetrik, dengan film sebagai indeks dan kolom
+
+   - items : tipe data pd.DataFrame (object), Mengandung kedua nama dan fitur lainnya yang digunakan untuk mendefinisikan kemiripan
+     (tittle dan genre)
+
+   - k : tipe data integer (int), banyaknya jumlah rekomendasi yang diberikan
+
+3. Mendapatkan rekomendasi
+   
+   Untuk mendapatkan rekomendasi, hal pertama yang perlu dilakukan adalah menentukan judul film yang ingin menjadi acuan dalam
+   memberikan rekomendasi, misalnya disini akan digunakan film Jumanji (1995)
+
+   ![image](https://github.com/user-attachments/assets/f0b01b70-99bd-441f-bc8a-7bb2ce1f754b)
+
+   maka setelah itu, dapat langsung gunakan fungsi yang sudah di definisikan sebelumnya. Sehingga sistem akan mengeluarkan 10
+   rekomendasi film sesuai dengan film acuan yang sudah ditentukan.
+
+   ![image](https://github.com/user-attachments/assets/c48ef345-2783-4884-9901-af810b2bd949)
+
+   Melalui gambar di atas, dapat dilihat bahwa sistem berhasil memberikan 10 rekomendasi film yang karakteristik genrenya sama seperti
+   film Jumanji (1995) yakni 	Adventure, Children dan Fantasy.
 
 ## Evaluation
 Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
@@ -173,9 +229,3 @@ Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, probl
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
-
-**---Ini adalah bagian akhir laporan---**
-
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
