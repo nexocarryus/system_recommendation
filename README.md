@@ -156,13 +156,13 @@ Sedangkan ratings.csv memiliki 101000 baris data dan 4 kolom dengan rincian seba
 
 1. Menyimpan data utama ke variabel baru khusus content based filtering
 
-Di tahap ini data utama dari movies.csv di copy ke variabel baru khusus untuk persiapan content based filtering, hal ini perlu dilakukan karena proses preprocessing maupun preparation data pada content based filtering berbeda dengan collaborative filtering, sehingga tahapan ini berfungsi agar data asli tidak terpengaruh oleh perubahan yang dilakukan pada proses pembangunan content based filtering dan data asli dapat digunakan kembali untuk membangun collaborative filtering.
+   Di tahap ini data utama dari movies.csv di copy ke variabel baru khusus untuk persiapan content based filtering, hal ini perlu dilakukan karena proses preprocessing maupun preparation data pada content based    filtering berbeda dengan collaborative filtering, sehingga tahapan ini berfungsi agar data asli tidak terpengaruh oleh perubahan yang dilakukan pada proses pembangunan content based filtering dan data asli      dapat digunakan kembali untuk membangun collaborative filtering.
 
 2. Menghapus film yang tidak memiliki genre
 
-Dilakukan penghapusan film yang  genrenya adalah 'no genre listed', dengan memfilter hanya film yang memiliki genre saja yang boleh disimpan ke dataframe. Hal ini dilakukan karena content based filtering akan memanfaatkan genre untuk memberikan rekomendasi film yang disukai oleh user berdasarkan preferensi mereka, apabila terdapat film yang tidak memiliki genre, maka tentunya hal ini akan menyulitkan dan tidak bisa digunakan dalam pembangunan content based filtering.
+   Dilakukan penghapusan film yang  genrenya adalah 'no genre listed', dengan memfilter hanya film yang memiliki genre saja yang boleh disimpan ke dataframe. Hal ini dilakukan karena content based filtering        akan memanfaatkan genre untuk memberikan rekomendasi film yang disukai oleh user berdasarkan preferensi mereka, apabila terdapat film yang tidak memiliki genre, maka tentunya hal ini akan menyulitkan dan        tidak bisa digunakan dalam pembangunan content based filtering.
 
-### Modeling
+### Modeling and Result 
 
 Content-based filtering adalah metode yang digunakan dalam sistem rekomendasi yang berfokus pada karakteristik atau konten dari item-item yang ingin direkomendasikan. Dalam proyek ini fitur item yang digunakan untuk menentukan kesamaan item yang ada dan preferensi pengguna adalah 'genre' film.
 
@@ -244,7 +244,13 @@ dengan mengikuti rumus tersebut, maka dapat menghitung precision dari content ba
    Penggabungan dataset memungkinkan sistem untuk menghubungkan informasi tentang film (judul dan genre) dengan rating yang
    diberikan oleh pengguna. Ini penting untuk memahami preferensi pengguna terhadap berbagai film.
 
-2. Encoding user id
+2. Menghapus film yang tidak memiliki genre
+   
+   Dilakukan penghapusan film yang  genrenya adalah 'no genre listed', dengan memfilter hanya film yang memiliki genre saja yang boleh
+   disimpan ke dataframe. Hal ini perlu dilakukan karena Film tanpa genre mungkin tidak memberikan informasi yang cukup untuk membuat
+   rekomendasi yang akurat karena genre adalah salah satu fitur penting yang membantu dalam memahami preferensi pengguna.
+
+3. Encoding user id
    
    Encoding user ID adalah proses mengubah identifikasi pengguna menjadi format numerik atau kategori yang dapat diproses oleh
    algoritma. Hal ini perlu dilakukan karena Algoritma collaborative filtering, membutuhkan data dalam
@@ -259,6 +265,9 @@ dengan mengikuti rumus tersebut, maka dapat menghitung precision dari content ba
    algoritma. Hal ini perlu dilakukan karena Algoritma collaborative filtering, membutuhkan data dalam
    format numerik untuk melakukan perhitungan kesamaan dan prediksi. Selain itu Encoding movie ID juga memastikan bahwa setiap film
    memiliki representasi yang konsisten di seluruh dataset.
+
+   ![image](https://github.com/user-attachments/assets/9bd10a7f-2136-4864-b9f7-e05ae11d7032)
+
 
 5. Mapping user id dan movie id ke dataframe yang berkaitan
 
@@ -278,7 +287,27 @@ dengan mengikuti rumus tersebut, maka dapat menghitung precision dari content ba
 Collaborative filtering adalah teknik yang digunakan dalam sistem rekomendasi untuk memprediksi preferensi pengguna berdasarkan kesamaan dengan pengguna lain. Kelebihan dari teknik ini adalah dapat menemukan item yang tidak terduga tetapi sesuai dengan selera pengguna. Namun kekurangannya adalah kesulitan memberikan rekomendasi untuk pengguna baru yang belum memiliki riwayat preferensi serta memerlukan komputasi yang besar untuk data pengguna yang banyak.
 
 1. Membuat class RecommenderNet dengan keras Model class
+
+   Pada class yang dirancang, terdapat beberapa fungsi dan parameter sebagai berikut:
+
+   fungsi:
    
+   def __init__(self, num_users, num_movie, embedding_size, **kwargs): berfungsi sebagai konstruktor
+   
+   parameter:
+   - num_users: jumlah unik user.
+   - num_movie: jumlah unik film.
+   - embedding_size: ukuran dimensi embedding (representasi vektor laten).
+   - **kwargs: argumen tambahan untuk superclass Model.
+
+   fungsi:
+
+   def call(self, inputs): berfungsi untuk menghandle forwardpass
+
+   parameter:
+   
+   inputs: tensor bentuk (batch_size, 2) berisi user_id dan movie_id per baris.
+
    Pada tahap ini, model menghitung skor kecocokan antara pengguna dan resto dengan teknik embedding. Pertama, dilakukan proses
    embedding terhadap data user dan movie. Selanjutnya, dilakukan operasi perkalian dot product antara embedding user dan movie. Selain
    itu, ditambahkan bias untuk setiap user dan movie. Skor kecocokan ditetapkan dalam skala [0,1] dengan fungsi aktivasi sigmoid.
@@ -290,15 +319,17 @@ Collaborative filtering adalah teknik yang digunakan dalam sistem rekomendasi un
    
 4. Memulai training model
 
-   ![image](https://github.com/user-attachments/assets/d7229125-9942-41b9-99ba-6ec616fde78e)
+   ![image](https://github.com/user-attachments/assets/0277f44a-a749-47d2-8073-aedf76983c3e)
+
 
 5. Mendapatkan rekomendasi
    Setelah proses pelatihan selesai, model dapat memberikan 10 rekomendasi yang sesuai dengan preferensi pengguna. Untuk menguji hasil
    rekomendasinya, digunakan percobaan terhadap user dengan id 325.
 
-   ![image](https://github.com/user-attachments/assets/a1c0c87a-7d36-40b9-ae56-d85859080607)
+   ![image](https://github.com/user-attachments/assets/d7e5fe72-a78b-494e-a463-639558db9d67)
 
-   Berdasarkan gambar di atas, dapat dilihat hasil rekomendasinya cukup baik dan sesuai dengan preferensi user dengan id 325.
+   Berdasarkan gambar di atas, dapat dilihat hasil rekomendasinya cukup baik dan sesuai dengan preferensi user id 325. Hal ini terbukti melalui genre movie yang direkomendasikan konsisten selalu memiliki
+   keterkaitan dengan genre movie yang mendapatkan rating tinggi oleh user.
 
 ### Evaluation
 
@@ -315,9 +346,9 @@ Di mana:
 
 Hasil proyek berdasarkan metrik evaluasi dapat dilihat melalui visualisasi berikut:
 
-![image](https://github.com/user-attachments/assets/f13c4a81-ff67-49d2-96dd-be0c1863f347)
+![image](https://github.com/user-attachments/assets/98096d5c-8501-4410-bc31-7b531ce59c25)
 
-berdasarkan visualisasi di atas, dapat diketahui bahwa proses training model cukup smooth dan model konvergen pada epochs sekitar 8. Dari proses ini, diperoleh nilai error akhir sebesar sekitar 0.1806 dan error pada data validasi sebesar 0.1953. Nilai tersebut cukup bagus untuk sistem rekomendasi. Hal ini semakin diperkuat dengan bukti rekomendasi yang cukup relevan pada saat dilakukan uji coba mendapatkan rekomendasi film.
+berdasarkan visualisasi di atas, dapat diketahui bahwa proses training model cukup smooth dan model konvergen pada epochs sekitar 10. Dari proses ini, diperoleh nilai error akhir pada proses training sebesar sekitar 0.1822 dan error pada data validasi sebesar 0.1957. Nilai tersebut cukup bagus untuk sistem rekomendasi. Hal ini semakin diperkuat dengan bukti rekomendasi yang cukup relevan pada saat dilakukan uji coba mendapatkan rekomendasi film.
 
 
 
