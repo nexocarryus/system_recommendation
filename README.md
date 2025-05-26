@@ -162,10 +162,6 @@ Di tahap ini data utama dari movies.csv di copy ke variabel baru khusus untuk pe
 
 Dilakukan penghapusan film yang  genrenya adalah 'no genre listed', dengan memfilter hanya film yang memiliki genre saja yang boleh disimpan ke dataframe. Hal ini dilakukan karena content based filtering akan memanfaatkan genre untuk memberikan rekomendasi film yang disukai oleh user berdasarkan preferensi mereka, apabila terdapat film yang tidak memiliki genre, maka tentunya hal ini akan menyulitkan dan tidak bisa digunakan dalam pembangunan content based filtering.
 
-3. Menerapkan TF-IDF vectorizer
-
-TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer adalah teknik yang digunakan dalam pemrosesan bahasa alami (NLP) untuk mengubah teks menjadi representasi numerik. Hal ini perlu dilakukan karena TF-IDF membantu mengidentifikasi kata-kata yang lebih relevan dalam data, sehingga sistem rekomendasi dapat lebih akurat dalam memahami konten yang disukai pengguna, selain itu TF-IDF juga dapat memungkinkan sistem untuk bekerja dengan representasi numerik yang lebih efisien, sehingga mempermudah perhitungan kesamaan antar data, dalam hal ini adalah judul film dengan genre film.
-
 ### Modeling
 
 Content-based filtering adalah metode yang digunakan dalam sistem rekomendasi yang berfokus pada karakteristik atau konten dari item-item yang ingin direkomendasikan. Dalam proyek ini fitur item yang digunakan untuk menentukan kesamaan item yang ada dan preferensi pengguna adalah 'genre' film.
@@ -173,7 +169,15 @@ Content-based filtering adalah metode yang digunakan dalam sistem rekomendasi ya
 Kelebihan dari pendekatan ini adalah hanya membutuhkan informasi tentang item dan preferensi pengguna, sehingga tidak bergantung pada data dari pengguna lain dan content-based filtering dapat memberikan rekomendasi bahkan untuk pengguna baru yang belum memiliki banyak interaksi. Sedangkan kekurangannya ialah pengguna mungkin hanya mendapatkan rekomendasi yang mirip dengan item yang sudah mereka sukai, sehingga mengurangi kemungkinan menemukan item baru yang berbeda.
 
 proses model development content based filtering dilakukan dengan tahapan berikut:
-1. Menghitung derajat kesamaan dengan cosine similarity
+
+
+1. Menerapkan TF-IDF vectorizer
+
+   TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer adalah teknik yang digunakan dalam pemrosesan bahasa alami (NLP) untuk mengubah teks menjadi representasi numerik. Hal ini perlu dilakukan karena
+   TF-IDF membantu mengidentifikasi kata-kata yang lebih relevan dalam data, sehingga sistem rekomendasi dapat lebih akurat dalam memahami konten yang disukai pengguna, selain itu TF-IDF juga dapat memungkinkan
+   sistem untuk bekerja dengan representasi numerik yang lebih efisien, sehingga mempermudah perhitungan kesamaan antar data, dalam hal ini adalah judul film dengan genre film.
+
+2. Menghitung derajat kesamaan dengan cosine similarity
 
    Setelah matrix tfidf sudah terbentuk selanjutnya dapat dihitung derajat kesamaan antar matrixnya dengan memanfaatkan cosine
    similarity, hasil akhirnya akan menjadi array 2 dimensi seperti berikut:
@@ -187,7 +191,7 @@ proses model development content based filtering dilakukan dengan tahapan beriku
 
    dari gambar di atas, dapat diketahui derajat kesamaan antar film yang ada. Contohnya jika ada user yang menyukai film Everything Is Illuminated (2005) maka kemungkinan sistem akan merekomendasikan film One-Way Ticket to Mombasa (Menolippu Mombasaan) (2002), karena nilai derajat kesamaan kedua film tersebut adalah 1.
 
-2. Membuat fungsi movie recommendations
+3. Membuat fungsi movie recommendations
 
    fungsi recommendations yang digunakan dalam proyek ini memiliki struktur sebagai berikut:   
 
@@ -207,7 +211,7 @@ proses model development content based filtering dilakukan dengan tahapan beriku
 
    - k : tipe data integer (int), banyaknya jumlah rekomendasi yang diberikan
 
-3. Mendapatkan rekomendasi
+4. Mendapatkan rekomendasi
    
    Untuk mendapatkan rekomendasi, hal pertama yang perlu dilakukan adalah menentukan judul film yang ingin menjadi acuan dalam
    memberikan rekomendasi, misalnya disini akan digunakan film Jumanji (1995)
@@ -228,5 +232,99 @@ Matrik evaluasi yang digunakan adalah precision. Precision bekerja dengan menguk
 ![image](https://github.com/user-attachments/assets/3fdf7a08-a69f-46e9-9b1c-1b3d123d3d91)
 
 dengan mengikuti rumus tersebut, maka dapat menghitung precision dari content based filtering yang sudah berhasil dibangun. Yakni ada 10 item yang relevant dari 10 rekomendasi yang diberikan. Artinya nilai precision dari model tersebut adalah 100%.
+
+## Collaborative Filtering
+
+### Data Pre-processing & Preparation
+1. Menggabungkan dataset movies dan ratings menjadi satu
+   
+   ![image](https://github.com/user-attachments/assets/94008b15-fc29-471b-be11-7f55e8287991)
+
+   Karena dataset film dan ratings pada priyek ini masih terpisah, maka perlu dilakukan penggabungan menjadi satu kesatuan dataframe.
+   Penggabungan dataset memungkinkan sistem untuk menghubungkan informasi tentang film (judul dan genre) dengan rating yang
+   diberikan oleh pengguna. Ini penting untuk memahami preferensi pengguna terhadap berbagai film.
+
+2. Encoding user id
+   
+   Encoding user ID adalah proses mengubah identifikasi pengguna menjadi format numerik atau kategori yang dapat diproses oleh
+   algoritma. Hal ini perlu dilakukan karena Algoritma collaborative filtering, membutuhkan data dalam
+   format numerik untuk melakukan perhitungan kesamaan dan prediksi.
+
+   ![image](https://github.com/user-attachments/assets/baa23bf4-fd92-4d52-87e5-f32e4e1b1560)
+
+   
+4. Encoding movie Id
+
+   Encoding movie ID adalah proses mengubah identifikasi film menjadi format numerik atau kategori yang dapat diproses oleh
+   algoritma. Hal ini perlu dilakukan karena Algoritma collaborative filtering, membutuhkan data dalam
+   format numerik untuk melakukan perhitungan kesamaan dan prediksi. Selain itu Encoding movie ID juga memastikan bahwa setiap film
+   memiliki representasi yang konsisten di seluruh dataset.
+
+5. Mapping user id dan movie id ke dataframe yang berkaitan
+
+   Proses ini adalah melakukan mapping hasil encode yang sudah dilakukan sebelumnya ke dalam dataset. Proses ini perlu dilakukan agar
+   sistem daoat mengakses dan menganalisis data secara bersamaan. Memastikan bahwa setiap pengguna dan film memiliki representasi yang
+   konsisten di seluruh dataset.
+
+6. Membagi data training dan validasi
+
+   Proses ini adalah membagi dataset menjadi dua bagian, 80% data training dan 20% data validasi. Data training digunakan untuk melatih
+   model. Model belajar dari data ini untuk memahami pola dan hubungan antara pengguna dan item. Sedangkan data validasi digunakan
+   untuk mengevaluasi performa model selama proses pelatihan. Proses ini perlu dilakukan untuk memastikan model tidak overfitting dan
+   dapat menggeneralisasi dengan baik pada data yang belum pernah dilihat sebelumnya.
+   
+### Modelling and Result
+
+Collaborative filtering adalah teknik yang digunakan dalam sistem rekomendasi untuk memprediksi preferensi pengguna berdasarkan kesamaan dengan pengguna lain. Kelebihan dari teknik ini adalah dapat menemukan item yang tidak terduga tetapi sesuai dengan selera pengguna. Namun kekurangannya adalah kesulitan memberikan rekomendasi untuk pengguna baru yang belum memiliki riwayat preferensi serta memerlukan komputasi yang besar untuk data pengguna yang banyak.
+
+1. Membuat class RecommenderNet dengan keras Model class
+   
+   Pada tahap ini, model menghitung skor kecocokan antara pengguna dan resto dengan teknik embedding. Pertama, dilakukan proses
+   embedding terhadap data user dan movie. Selanjutnya, dilakukan operasi perkalian dot product antara embedding user dan movie. Selain
+   itu, ditambahkan bias untuk setiap user dan movie. Skor kecocokan ditetapkan dalam skala [0,1] dengan fungsi aktivasi sigmoid.
+
+3. Compile model
+
+   Model ini menggunakan Binary Crossentropy untuk menghitung loss function, Adam (Adaptive Moment Estimation) sebagai optimizer, dan
+   root mean squared error (RMSE) sebagai metrics evaluation.
+   
+4. Memulai training model
+
+   ![image](https://github.com/user-attachments/assets/d7229125-9942-41b9-99ba-6ec616fde78e)
+
+5. Mendapatkan rekomendasi
+   Setelah proses pelatihan selesai, model dapat memberikan 10 rekomendasi yang sesuai dengan preferensi pengguna. Untuk menguji hasil
+   rekomendasinya, digunakan percobaan terhadap user dengan id 325.
+
+   ![image](https://github.com/user-attachments/assets/a1c0c87a-7d36-40b9-ae56-d85859080607)
+
+   Berdasarkan gambar di atas, dapat dilihat hasil rekomendasinya cukup baik dan sesuai dengan preferensi user dengan id 325.
+
+### Evaluation
+
+Metrik yang digunakan untuk evaluasi pada proyek ini adalah Root Mean Square Error (RMSE). Metrik tersebut adalah metrik yang digunakan untuk mengukur seberapa baik model prediktif mendekati nilai aktual. RMSE memberikan ukuran rata-rata kesalahan kuadrat dari prediksi model, memberikan bobot lebih besar pada kesalahan yang lebih besar. 
+
+Formula dari RMSE adalah sebagai berikut:
+
+![image](https://github.com/user-attachments/assets/3a3516b2-17ec-41f4-9c38-713fbba9b9cc)
+
+Di mana:
+- n adlaah jumlah sample dalam data
+- yi adalah nilai aktual
+- yi^ adalah nilai prediksi
+
+Hasil proyek berdasarkan metrik evaluasi dapat dilihat melalui visualisasi berikut:
+
+![image](https://github.com/user-attachments/assets/f13c4a81-ff67-49d2-96dd-be0c1863f347)
+
+berdasarkan visualisasi di atas, dapat diketahui bahwa proses training model cukup smooth dan model konvergen pada epochs sekitar 8. Dari proses ini, diperoleh nilai error akhir sebesar sekitar 0.1806 dan error pada data validasi sebesar 0.1953. Nilai tersebut cukup bagus untuk sistem rekomendasi. Hal ini semakin diperkuat dengan bukti rekomendasi yang cukup relevan pada saat dilakukan uji coba mendapatkan rekomendasi film.
+
+
+
+
+   
+
+
+
 
 
