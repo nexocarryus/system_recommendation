@@ -323,6 +323,7 @@ Collaborative filtering adalah teknik yang digunakan dalam sistem rekomendasi un
 
 
 5. Mendapatkan rekomendasi
+   
    Setelah proses pelatihan selesai, model dapat memberikan 10 rekomendasi yang sesuai dengan preferensi pengguna. Untuk menguji hasil
    rekomendasinya, digunakan percobaan terhadap user dengan id 325.
 
